@@ -38,6 +38,11 @@ namespace Shop.BLL.Services
             return _repo.GetByReference(reference);
         }
 
+        public IEnumerable<ArticleEntity> Search(string nom)
+        {
+            return _repo.Search(nom);
+        }
+
         public bool Update(ArticleEntity article)
         {
             return _repo.Update(article);

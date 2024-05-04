@@ -69,6 +69,14 @@ namespace Shop.DAL.DataAccess
             return article;
         }
 
+        public IEnumerable<ArticleEntity> Search(string nom)
+        {
+            string sql = "SELECT * FROM [Article] WHERE Nom LIKE '%' + @nom + '%'";
+            IEnumerable<ArticleEntity> articles = _connection.Query<ArticleEntity>(sql, new { nom });
+
+            return articles;
+        }
+
         public bool Update(ArticleEntity article)
         {
             string sql = "UPDATE [Article] SET Nom = @Nom, Description = @Description, Categorie = @Categorie, Quantite = @Quantite, Image = @Image," +

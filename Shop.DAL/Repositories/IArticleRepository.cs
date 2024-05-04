@@ -14,5 +14,6 @@ namespace Shop.DAL.Repositories
         bool Update(ArticleEntity article);
         bool Create(ArticleEntity article);
         bool DeleteByReference(int reference);
+        IEnumerable<ArticleEntity> Search(string nom);
     }
 }

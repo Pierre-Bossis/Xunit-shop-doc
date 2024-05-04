@@ -24,6 +24,14 @@ namespace Shop.Controllers
             return Ok(articles);
         }
 
+        [HttpGet("search/{nom}")]
+        public IActionResult Search([FromRoute] string nom)
+        {
+            IEnumerable<ArticleDTO> searchResult = _repo.Search(nom).Select(e => e.ToDtoGET());
+
+            return Ok(searchResult);
+        }
+
         [HttpGet("{reference:int}")]
         public IActionResult GetByReference(int reference)
         {
