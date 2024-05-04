@@ -1,0 +1,18 @@
+﻿CREATE TABLE [dbo].[Article]
+(
+	[Reference] INT NOT NULL PRIMARY KEY IDENTITY,
+	[Nom] VARCHAR(MAX) NOT NULL,
+	[Description] VARCHAR(MAX) NOT NULL,
+	[Categorie] VARCHAR(MAX) NOT NULL,
+	[Quantite] INT DEFAULT 0,
+	[Image] VARCHAR(MAX) NOT NULL,
+	[Prix] DECIMAL(18,2) NOT NULL,
+	[QuantiteVendue] INT NOT NULL DEFAULT 0,
+	[NombreRecommandations] INT NOT NULL DEFAULT 0,
+	[Poids] DECIMAL(18,2) NOT NULL,
+	[Taille] DECIMAL(18,2) NOT NULL DEFAULT 0,
+	[Provenance] VARCHAR(100) NOT NULL,
+	[DateMiseEnLigne] DATETIME NOT NULL DEFAULT GETDATE(),
+	[Fournisseur] VARCHAR(MAX) NOT NULL,
+	[MotsCles] VARCHAR(MAX) NOT NULL
+)
