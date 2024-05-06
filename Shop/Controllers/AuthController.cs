@@ -87,5 +87,31 @@ namespace Shop.Controllers
 
             return Ok(basket);
         }
+
+        [Authorize("connectedPolicy")]
+        [HttpDelete("deletebasket/{reference:int}")]
+        public IActionResult DeleteFromBasket(int reference)
+        {
+            Guid.TryParse(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"), out Guid id);
+
+            bool success = _basketRepo.DeleteFromBasket(id, reference);
+
+            if (success)
+                return Ok();
+            return BadRequest("Erreur lors de la suppression de l'élément.");
+        }
+
+        [Authorize("connectedPolicy")]
+        [HttpPut("updatebasket")]
+        public IActionResult UpdateBasket([FromBody] UpdateBasketDTO dto)
+        {
+            Guid.TryParse(User.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"), out Guid id);
+
+            bool success = _basketRepo.UpdateQuantity(id, dto.Reference, dto.Operation);
+
+            if(success)
+                return Ok();
+            return BadRequest("Impossible de modifier l'élément.");
+        }
     }
 }

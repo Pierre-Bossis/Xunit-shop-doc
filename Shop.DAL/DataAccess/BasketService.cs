@@ -31,10 +31,12 @@ namespace Shop.DAL.DataAccess
             }
         }
 
-        public void DeleteFromBasket(Guid id, int reference)
+        public bool DeleteFromBasket(Guid id, int reference)
         {
             string sql = "DELETE FROM Basket WHERE UserId = @id AND ArticleReference = @reference";
-            _connection.Execute(sql, new { id, reference });
+            int rowsAffected =  _connection.Execute(sql, new { id, reference });
+
+            return rowsAffected > 0;
         }
 
         //solution temporaire
@@ -57,10 +59,17 @@ namespace Shop.DAL.DataAccess
             return basket;
         }
 
-        public void UpdateQuantity(Guid id, int reference, int quantity)
+        public bool UpdateQuantity(Guid id, int reference, string operation)
         {
-            string sql = "UPDATE [Basket] SET Quantity = @quantity WHERE UserId = @id AND ArticleReference = @reference";
-            _connection.Execute(sql, new { quantity, id, reference });
+            string sql = "";
+            if (operation == "+")
+                sql = "UPDATE [Basket] SET Quantity = Quantity + 1 WHERE UserId = @id AND ArticleReference = @reference";
+            else
+                sql = "UPDATE [Basket] SET Quantity = CASE WHEN Quantity > 1 THEN Quantity -1 ELSE 1 END WHERE UserId = @id AND ArticleReference = @reference";
+
+            int rowsAffected = _connection.Execute(sql, new { id, reference });
+
+            return rowsAffected > 0;
         }
     }
 }

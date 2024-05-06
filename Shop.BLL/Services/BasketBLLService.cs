@@ -22,9 +22,9 @@ namespace Shop.BLL.Services
             _repo.AddToBasket(id, reference);
         }
 
-        public void DeleteFromBasket(Guid id, int reference)
+        public bool DeleteFromBasket(Guid id, int reference)
         {
-            _repo.DeleteFromBasket(id, reference);
+            return _repo.DeleteFromBasket(id, reference);
         }
 
         public IEnumerable<BasketItemEntity> GetBasket(Guid id)
@@ -32,9 +32,9 @@ namespace Shop.BLL.Services
             return _repo.GetBasket(id);
         }
 
-        public void UpdateQuantity(Guid id, int reference, int quantity)
+        public bool UpdateQuantity(Guid id, int reference, string operation)
         {
-            _repo.UpdateQuantity(id, reference, quantity);
+            return _repo.UpdateQuantity(id, reference, operation);
         }
     }
 }

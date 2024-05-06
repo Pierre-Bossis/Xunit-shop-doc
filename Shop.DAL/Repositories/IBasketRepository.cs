@@ -11,8 +11,8 @@ namespace Shop.DAL.Repositories
     {
         void AddToBasket(Guid id,int reference);
         IEnumerable<BasketItemEntity> GetBasket(Guid id);
-        void DeleteFromBasket(Guid id,int reference);
-        void UpdateQuantity(Guid id, int reference, int quantity);
+        bool DeleteFromBasket(Guid id,int reference);
+        bool UpdateQuantity(Guid id, int reference, string operation);
 
     }
 }
