@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.BLL.Interfaces;
 using Shop.Models.Article;
+using Shop.Tools;
 using Shop.Tools.Mappers.Article;
 
 namespace Shop.Controllers
@@ -11,10 +13,12 @@ namespace Shop.Controllers
     public class ArticleController : ControllerBase
     {
         private readonly IArticleBLLRepository _repo;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public ArticleController(IArticleBLLRepository repo)
+        public ArticleController(IArticleBLLRepository repo, IWebHostEnvironment hostingEnvironment)
         {
             _repo = repo;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
@@ -43,11 +47,13 @@ namespace Shop.Controllers
 
         [Authorize("AdminPolicy")]
         [HttpPost("create")]
-        public IActionResult Create([FromBody] ArticleCreateDTO article)
+        public async Task<IActionResult> Create([FromForm] ArticleCreateDTO article)
         {
             if(!ModelState.IsValid) return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
-            bool success = _repo.Create(article.ToEntity());
+            string relativePath = await ImageConverter.SaveIcone(article.Image, "Articles", _hostingEnvironment);
+
+            bool success = _repo.Create(article.ToEntity(relativePath));
             if(success)
                 return Created("", new { success = true, message = "Article créé avec succès." });
             return StatusCode(500, new { success = false, message = "Erreur lors de la création de l'article." });

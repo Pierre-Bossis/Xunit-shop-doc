@@ -29,7 +29,7 @@ namespace Shop.DAL.DataAccess
 
         public UserEntity Login(string email)
         {
-            string sql = "SELECT * FROM [User] WHERE Email = email";
+            string sql = "SELECT * FROM [User] WHERE Email = @email";
             return _connection.QueryFirst<UserEntity>(sql, new {email = email});
         }
 

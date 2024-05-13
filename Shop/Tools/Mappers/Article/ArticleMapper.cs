@@ -7,7 +7,7 @@ namespace Shop.Tools.Mappers.Article
     {
         #region CREATE
 
-        public static ArticleEntity ToEntity(this ArticleCreateDTO dto)
+        public static ArticleEntity ToEntity(this ArticleCreateDTO dto, string relativePath)
         {
             if (dto is null) return null;
 
@@ -17,7 +17,7 @@ namespace Shop.Tools.Mappers.Article
                 Description = dto.Description,
                 Categorie = dto.Categorie,
                 Quantite = dto.Quantite,
-                Image = dto.Image,
+                Image = relativePath,
                 Prix = dto.Prix,
                 Poids = dto.Poids,
                 Taille = dto.Taille,
@@ -37,6 +37,14 @@ namespace Shop.Tools.Mappers.Article
         {
             if (entity is null) return null;
 
+            string base64String = string.Empty;
+
+            if (!string.IsNullOrEmpty(entity.Image) && File.Exists(entity.Image))
+            {
+                byte[] imageBytes = File.ReadAllBytes(entity.Image);
+                base64String = Convert.ToBase64String(imageBytes);
+            }
+
             ArticleDTO a = new()
             {
                 Reference = entity.Reference,
@@ -44,7 +52,7 @@ namespace Shop.Tools.Mappers.Article
                 Description = entity.Description,
                 Categorie = entity.Categorie,
                 Quantite = entity.Quantite,
-                Image = entity.Image,
+                Image = base64String,
                 Prix = entity.Prix,
                 QuantiteVendue = entity.QuantiteVendue,
                 NombreRecommandations = entity.NombreRecommandations,
