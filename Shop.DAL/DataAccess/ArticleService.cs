@@ -47,12 +47,15 @@ namespace Shop.DAL.DataAccess
             return rowsAffected > 0;
         }
 
-        public bool DeleteByReference(int reference)
+        public string DeleteByReference(int reference)
         {
+            string recupImage = "SELECT Image FROM [Article] WHERE Reference = @reference";
+            string imageToDelete = _connection.QueryFirstOrDefault<string>(recupImage, new { reference = reference });
+
             string sql = "DELETE FROM [Article] WHERE Reference = @reference";
             var rowsAffected = _connection.Execute(sql, new { reference = reference });
 
-            return rowsAffected > 0;
+            return imageToDelete;
         }
 
         public IEnumerable<ArticleEntity> GetAll()

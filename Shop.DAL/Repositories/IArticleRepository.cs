@@ -13,7 +13,7 @@ namespace Shop.DAL.Repositories
         ArticleEntity GetByReference(int reference);
         bool Update(ArticleEntity article);
         bool Create(ArticleEntity article);
-        bool DeleteByReference(int reference);
+        string DeleteByReference(int reference);
         IEnumerable<ArticleEntity> Search(string nom);
     }
 }

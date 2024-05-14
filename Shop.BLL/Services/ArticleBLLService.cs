@@ -23,7 +23,7 @@ namespace Shop.BLL.Services
             return _repo.Create(article);
         }
 
-        public bool DeleteByReference(int reference)
+        public string DeleteByReference(int reference)
         {
             return _repo.DeleteByReference(reference);
         }

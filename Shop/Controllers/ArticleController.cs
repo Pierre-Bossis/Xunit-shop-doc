@@ -75,8 +75,14 @@ namespace Shop.Controllers
         [HttpDelete("delete/{reference:int}")]
         public IActionResult DeleteByReference(int reference)
         {
-           bool success = _repo.DeleteByReference(reference);
-            if (success)
+           string ImageToDelete = _repo.DeleteByReference(reference);
+           string repertoireTravail = Directory.GetCurrentDirectory();
+           string cheminAbsolu = Path.Combine(repertoireTravail, ImageToDelete);
+
+            if (System.IO.File.Exists(cheminAbsolu))
+                System.IO.File.Delete(cheminAbsolu);
+
+            if (ImageToDelete is not null)
                 return Ok("Article supprimé avec succès");
             return NotFound("Article non trouvé.");
         }
