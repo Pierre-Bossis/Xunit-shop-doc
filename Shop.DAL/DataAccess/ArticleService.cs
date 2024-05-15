@@ -82,7 +82,7 @@ namespace Shop.DAL.DataAccess
 
         public bool Update(ArticleEntity article)
         {
-            string sql = "UPDATE [Article] SET Nom = @Nom, Description = @Description, Categorie = @Categorie, Quantite = @Quantite, Image = @Image," +
+            string sql = "UPDATE [Article] SET Nom = @Nom, Description = @Description, Categorie = @Categorie, Quantite = @Quantite," +
                 "Prix = @Prix, Poids = @Poids, Taille = @Taille, Provenance = @Provenance, Fournisseur = @Fournisseur, MotsCles = @MotsCles" +
                 " WHERE Reference = @Reference;";
             int rowsAffected = _connection.Execute(sql,article);

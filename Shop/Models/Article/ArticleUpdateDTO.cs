@@ -13,8 +13,8 @@ namespace Shop.Models.Article
         public string Categorie { get; set; }
         [Range(0, 1000), Required]
         public int Quantite { get; set; }
-        [MinLength(2), MaxLength(1000), Required]
-        public string Image { get; set; }
+        //[MinLength(2), MaxLength(1000), Required]
+        //public string Image { get; set; }
         [Range(1, 10000), Required]
         public decimal Prix { get; set; }
         [Required]

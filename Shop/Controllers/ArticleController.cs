@@ -60,7 +60,7 @@ namespace Shop.Controllers
         }
 
         [Authorize("AdminPolicy")]
-        [HttpPut("update/{reference:int}")]
+        [HttpPut("update")]
         public IActionResult Update([FromBody] ArticleUpdateDTO article)
         {
             if (!ModelState.IsValid) return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });

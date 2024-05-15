@@ -76,11 +76,12 @@ namespace Shop.Tools.Mappers.Article
 
             ArticleEntity e = new ArticleEntity()
             {
+                Reference = articleUpdateDTO.Reference,
                 Nom = articleUpdateDTO.Nom,
                 Description = articleUpdateDTO.Description,
                 Categorie = articleUpdateDTO.Categorie,
                 Quantite = articleUpdateDTO.Quantite,
-                Image = articleUpdateDTO.Image,
+                //Image = articleUpdateDTO.Image,
                 Prix = articleUpdateDTO.Prix,
                 Poids = articleUpdateDTO.Poids,
                 Taille = articleUpdateDTO.Taille,
@@ -92,27 +93,27 @@ namespace Shop.Tools.Mappers.Article
             return e;
         }
 
-        public static ArticleUpdateDTO ToDtoUpdate(this ArticleEntity entity)
-        {
-            if (entity is null) return null;
+        //public static ArticleUpdateDTO ToDtoUpdate(this ArticleEntity entity)
+        //{
+        //    if (entity is null) return null;
 
-            ArticleUpdateDTO a = new()
-            {
-                Nom = entity.Nom,
-                Description = entity.Description,
-                Categorie = entity.Categorie,
-                Quantite = entity.Quantite,
-                Image = entity.Image,
-                Prix = entity.Prix,
-                Poids = entity.Poids,
-                Taille = entity.Taille,
-                Provenance = entity.Provenance,
-                Fournisseur = entity.Fournisseur,
-                MotsCles = entity.MotsCles,
-            };
+        //    ArticleUpdateDTO a = new()
+        //    {
+        //        Nom = entity.Nom,
+        //        Description = entity.Description,
+        //        Categorie = entity.Categorie,
+        //        Quantite = entity.Quantite,
+        //        Image = entity.Image,
+        //        Prix = entity.Prix,
+        //        Poids = entity.Poids,
+        //        Taille = entity.Taille,
+        //        Provenance = entity.Provenance,
+        //        Fournisseur = entity.Fournisseur,
+        //        MotsCles = entity.MotsCles,
+        //    };
 
-            return a;
-        }
+        //    return a;
+        //}
 
         #endregion
 
