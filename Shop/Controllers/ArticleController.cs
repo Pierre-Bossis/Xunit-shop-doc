@@ -24,7 +24,7 @@ namespace Shop.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            IEnumerable<ArticleDTO> articles =  _repo.GetAll().Select(e => e.ToDtoGET());
+            IEnumerable<ArticleDTO> articles = _repo.GetAll().Select(e => e.ToDtoGET());
             return Ok(articles);
         }
 
@@ -40,7 +40,7 @@ namespace Shop.Controllers
         public IActionResult GetByReference(int reference)
         {
             ArticleDTO article = _repo.GetByReference(reference).ToDtoGET();
-            if(article is not null)
+            if (article is not null)
                 return Ok(article);
             return NotFound("Aucun article trouvé.");
         }
@@ -49,12 +49,12 @@ namespace Shop.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] ArticleCreateDTO article)
         {
-            if(!ModelState.IsValid) return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
+            if (!ModelState.IsValid) return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
             string relativePath = await ImageConverter.SaveIcone(article.Image, "Articles", _hostingEnvironment);
 
             bool success = _repo.Create(article.ToEntity(relativePath));
-            if(success)
+            if (success)
                 return Created("", new { success = true, message = "Article créé avec succès." });
             return StatusCode(500, new { success = false, message = "Erreur lors de la création de l'article." });
         }
@@ -75,16 +75,19 @@ namespace Shop.Controllers
         [HttpDelete("delete/{reference:int}")]
         public IActionResult DeleteByReference(int reference)
         {
-           string ImageToDelete = _repo.DeleteByReference(reference);
-           string repertoireTravail = Directory.GetCurrentDirectory();
-           string cheminAbsolu = Path.Combine(repertoireTravail, ImageToDelete);
-
-            if (System.IO.File.Exists(cheminAbsolu))
-                System.IO.File.Delete(cheminAbsolu);
+            string ImageToDelete = _repo.DeleteByReference(reference);
 
             if (ImageToDelete is not null)
+            {
+                string repertoireTravail = Directory.GetCurrentDirectory();
+                string cheminAbsolu = Path.Combine(repertoireTravail, ImageToDelete);
+
+                if (System.IO.File.Exists(cheminAbsolu))
+                    System.IO.File.Delete(cheminAbsolu);
+
                 return Ok("Article supprimé avec succès");
-            return NotFound("Article non trouvé.");
+            }
+            return NotFound("Article non trouvé");
         }
     }
 }
