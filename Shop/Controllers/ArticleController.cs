@@ -67,7 +67,7 @@ namespace Shop.Controllers
 
             bool success = _repo.Update(article.ToEntity());
             if (success)
-                return Ok("Article modifié avec succès.");
+                return Ok("Article modifié avec succès");
             return BadRequest("Erreur lors de la mise à jour de l'article.");
         }
 

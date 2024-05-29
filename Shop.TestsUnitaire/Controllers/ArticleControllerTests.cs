@@ -5,12 +5,7 @@ using Shop.BLL.Interfaces;
 using Shop.Controllers;
 using Shop.DAL.Entities;
 using Shop.Models.Article;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using Shop.Tools.Mappers.Article;
 namespace Shop.TestsUnitaire.Controllers
 {
     public class ArticleControllerTests
@@ -37,7 +32,7 @@ namespace Shop.TestsUnitaire.Controllers
             Assert.Equal(200, result.StatusCode);  // Vérifie que le statut est 200 (OK)
             Assert.Equal(0, (result.Value as IEnumerable<ArticleDTO>).Count());
 
-            mockArticleBLLRepository.Verify(repo => repo.GetAll());
+            mockArticleBLLRepository.Verify(repo => repo.GetAll(), Times.Once);
         }
 
         [Fact]
@@ -59,7 +54,7 @@ namespace Shop.TestsUnitaire.Controllers
             Assert.IsAssignableFrom<IEnumerable<ArticleDTO>>(result.Value); // Vérifie que la valeur est bien une liste d'ArticleDTO
             Assert.Equal(3, (result.Value as IEnumerable<ArticleDTO>).Count());
 
-            mockArticleBLLRepository.Verify(repo => repo.GetAll());
+            mockArticleBLLRepository.Verify(repo => repo.GetAll(), Times.Once);
         }
 
         #endregion
@@ -82,7 +77,7 @@ namespace Shop.TestsUnitaire.Controllers
             Assert.Equal(200, result.StatusCode );
             Assert.Equal(typeof(ArticleDTO), result.Value.GetType());
             Assert.IsAssignableFrom<ArticleDTO>(result.Value);
-            mockArticleBLLRepository.Verify(repo => repo.GetByReference(reference));
+            mockArticleBLLRepository.Verify(repo => repo.GetByReference(reference), Times.Once);
         }
 
         [Fact]
@@ -101,7 +96,7 @@ namespace Shop.TestsUnitaire.Controllers
             Assert.NotNull(result);
             Assert.Equal(404, result.StatusCode);
             Assert.Equal("Aucun article trouvé.", result.Value);
-            mockArticleBLLRepository.Verify(repo => repo.GetByReference(reference));
+            mockArticleBLLRepository.Verify(repo => repo.GetByReference(reference), Times.Once);
         }
 
         #endregion
@@ -124,7 +119,7 @@ namespace Shop.TestsUnitaire.Controllers
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
             Assert.Contains("supprimé avec succès",result.Value.ToString());
-            mockArticleBLLRepository.Verify( repo => repo.DeleteByReference(reference));
+            mockArticleBLLRepository.Verify( repo => repo.DeleteByReference(reference), Times.Once);
         }
 
         [Fact]
@@ -144,7 +139,125 @@ namespace Shop.TestsUnitaire.Controllers
             Assert.NotNull(result);
             Assert.Equal(404, result.StatusCode);
             Assert.Contains("non trouvé", result.Value.ToString());
-            mockArticleBLLRepository.Verify(repo => repo.DeleteByReference(reference));
+            mockArticleBLLRepository.Verify(repo => repo.DeleteByReference(reference), Times.Once);
+        }
+
+        #endregion
+
+        #region Search Tests
+
+        [Fact]
+        public void Search_Should_Return_OkResult_4Elements()
+        {
+            //arrange
+            string searchValue = "value";
+            List<ArticleEntity> list = new List<ArticleEntity>() { new(), new(), new(), new() };
+
+            mockArticleBLLRepository.Setup(repo => repo.Search(searchValue)).Returns(list);
+
+            ArticleController controller = new(mockArticleBLLRepository.Object, mockHostingEnvironment.Object);
+
+            //act
+            var result = controller.Search(searchValue) as OkObjectResult;
+
+            //assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            Assert.IsAssignableFrom<IEnumerable<ArticleDTO>>(result.Value);
+            Assert.Equal(4, (result.Value as IEnumerable<ArticleDTO>).Count());
+            mockArticleBLLRepository.Verify(repo => repo.Search(searchValue), Times.Once);
+        }
+
+        [Fact]
+        public void Search_Should_Return_OkResult_Empty()
+        {
+            //arrange
+            string searchValue = "fgdhsfgd";
+            List<ArticleEntity> list = new List<ArticleEntity>();
+
+            mockArticleBLLRepository.Setup(repo => repo.Search(searchValue)).Returns(list);
+
+            ArticleController controller = new(mockArticleBLLRepository.Object, mockHostingEnvironment.Object);
+
+            //act
+            var result = controller.Search(searchValue) as OkObjectResult;
+
+            //assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            Assert.IsAssignableFrom<IEnumerable<ArticleDTO>>(result.Value);
+            Assert.Equal(0, (result.Value as IEnumerable<ArticleDTO>).Count());
+            mockArticleBLLRepository.Verify(repo => repo.Search(searchValue),Times.Once);
+        }
+
+        #endregion
+
+        #region Update Tests
+
+        [Fact]
+        public void Update_Should_Return_OkResult()
+        {
+            //arrange
+            ArticleUpdateDTO dto = new ArticleUpdateDTO()
+            {
+                Reference = 1,
+                Nom = "nom",
+                Description = "description",
+                Categorie = "categorie",
+                Quantite = 3,
+                Prix = 50.25m,
+                Poids = 0,
+                Taille = 0,
+                Provenance = "Chine",
+                Fournisseur = "Fournisseur",
+                MotsCles = "motscles1,motscles2",
+            };
+
+            mockArticleBLLRepository.Setup(repo => repo.Update(It.IsAny<ArticleEntity>())).Returns(true);
+            ArticleController controller = new(mockArticleBLLRepository.Object,mockHostingEnvironment.Object);
+            ///Simule que le modelState est valide
+            controller.ModelState.Clear();
+
+            //act
+            var result = controller.Update(dto) as OkObjectResult;
+
+            //assert
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+            Assert.Contains("modifié avec succès", result.Value.ToString());
+            mockArticleBLLRepository.Verify(repo => repo.Update(It.IsAny<ArticleEntity>()),Times.Once);
+        }
+
+        [Fact]
+        public void Update_Should_Return_BadRequestObjectResult()
+        {
+            //arrange
+            ArticleUpdateDTO dto = new ArticleUpdateDTO()
+            {
+                Reference = 0,
+                Nom = "nom",
+                Description = "description",
+                Categorie = "categorie",
+                Quantite = 3,
+                Prix = 50.25m,
+                Poids = 0,
+                Taille = 0,
+                Provenance = "Chine",
+                Fournisseur = "Fournisseur",
+                MotsCles = "motscles1,motscles2",
+            };
+
+            mockArticleBLLRepository.Setup(repo => repo.Update(It.IsAny<ArticleEntity>())).Returns(false);
+            ArticleController controller = new(mockArticleBLLRepository.Object, mockHostingEnvironment.Object);
+
+            //act
+            var result = controller.Update(dto) as BadRequestObjectResult;
+
+            //assert
+            Assert.NotNull(result);
+            Assert.Equal(400, result.StatusCode);
+            Assert.Contains("Erreur", result.Value.ToString());
+            mockArticleBLLRepository.Verify(repo => repo.Update(It.IsAny<ArticleEntity>()),Times.Once);
         }
 
         #endregion
