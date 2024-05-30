@@ -51,7 +51,7 @@ namespace Shop.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
 
-            string relativePath = await ImageConverter.SaveIcone(article.Image, "Articles", _hostingEnvironment);
+            string relativePath = await ImageConverter.SaveImage(article.Image, "Articles", _hostingEnvironment);
 
             bool success = _repo.Create(article.ToEntity(relativePath));
             if (success)

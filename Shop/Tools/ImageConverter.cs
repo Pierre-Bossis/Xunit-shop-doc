@@ -11,7 +11,7 @@
             }
         }
 
-        public static async Task<string> SaveIcone(IFormFile file, string categorie, IWebHostEnvironment hostingEnvironment)
+        public static async Task<string> SaveImage(IFormFile file, string categorie, IWebHostEnvironment hostingEnvironment)
         {
             Guid newName = Guid.NewGuid();
             string fileName = newName.ToString() + file.FileName;

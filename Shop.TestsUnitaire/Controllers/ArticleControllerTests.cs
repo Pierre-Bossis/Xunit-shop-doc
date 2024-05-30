@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Shop.BLL.Interfaces;
 using Shop.Controllers;
 using Shop.DAL.Entities;
 using Shop.Models.Article;
+using Shop.Tools;
 using Shop.Tools.Mappers.Article;
 namespace Shop.TestsUnitaire.Controllers
 {
@@ -259,6 +262,10 @@ namespace Shop.TestsUnitaire.Controllers
             Assert.Contains("Erreur", result.Value.ToString());
             mockArticleBLLRepository.Verify(repo => repo.Update(It.IsAny<ArticleEntity>()),Times.Once);
         }
+
+        #endregion
+
+        #region Create Tests
 
         #endregion
     }

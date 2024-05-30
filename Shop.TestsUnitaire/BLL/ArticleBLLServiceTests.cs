@@ -8,11 +8,11 @@ namespace Shop.TestsUnitaire.BLL
 {
     public class ArticleBLLServiceTests
     {
+        private Mock<IArticleRepository> mockArticleRepository = new Mock<IArticleRepository>();
         #region GetAll Tests
         [Fact]
         public void GetAll_Test()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
             List<ArticleEntity> list = [];
 
             mockArticleRepository.Setup(repo => repo.GetAll()).Returns(list);
@@ -31,8 +31,6 @@ namespace Shop.TestsUnitaire.BLL
         [Fact]
         public void GetByReferenceValidTest()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
-
             mockArticleRepository.Setup(repo => repo.GetByReference(1)).Returns(new ArticleEntity() { Reference = 5});
 
             IArticleBLLRepository repository = new ArticleBLLService(mockArticleRepository.Object);
@@ -48,8 +46,6 @@ namespace Shop.TestsUnitaire.BLL
         [Fact]
         public void GetByReferenceInvalidTest()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
-
             mockArticleRepository.Setup(repo => repo.GetByReference(It.IsAny<int>())).Returns((ArticleEntity)null);
 
             IArticleBLLRepository repository = new ArticleBLLService(mockArticleRepository.Object);
@@ -65,7 +61,6 @@ namespace Shop.TestsUnitaire.BLL
         [Fact]
         public void DeleteByReferenceValidTest()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
             int referenceToDelete = 1;
             string expectedPath = "ImageToDeletePath";
 
@@ -84,7 +79,6 @@ namespace Shop.TestsUnitaire.BLL
         [Fact]
         public void DeleteByReferenceInvalidTest()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
             int referenceToDelete = 60;
             string expectedPath = "ImageToDeletePath";
 
@@ -105,7 +99,6 @@ namespace Shop.TestsUnitaire.BLL
         [Fact]
         public void SearchMore0ResultTest()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
             string searchValue = "nom article";
             List<ArticleEntity> entities = new List<ArticleEntity> { new(), new() };
             mockArticleRepository.Setup(repo => repo.Search(searchValue)).Returns(entities);
@@ -121,7 +114,6 @@ namespace Shop.TestsUnitaire.BLL
         [Fact]
         public void Search0ResultTest()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
             string searchValue = "nom article";
             List<ArticleEntity> entities = new List<ArticleEntity>();
             mockArticleRepository.Setup(repo => repo.Search(searchValue)).Returns(entities);
@@ -139,8 +131,6 @@ namespace Shop.TestsUnitaire.BLL
         [Fact]
         public void Update_Article_Return_True()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
-
             ArticleEntity entity = new ArticleEntity()
             {
                 Reference = 550,
@@ -173,8 +163,6 @@ namespace Shop.TestsUnitaire.BLL
         [Fact]
         public void Update_Article_Return_False()
         {
-            var mockArticleRepository = new Mock<IArticleRepository>();
-
             ArticleEntity entity = new ArticleEntity()
             {
                 Reference = 0,
@@ -202,6 +190,73 @@ namespace Shop.TestsUnitaire.BLL
 
             Assert.False(success);
             mockArticleRepository.Verify(repo => repo.Update(entity), Times.Once);
+        }
+
+        #endregion
+
+        #region Create Test
+        [Fact]
+        public void Create_Should_Return_True()
+        {
+            //arrange
+            ArticleEntity entity = new ArticleEntity()
+            {
+                Nom = "nom",
+                Description = "description",
+                Categorie = "categorie",
+                Quantite = 3,
+                Image = "path",
+                Prix = 50.25m,
+                QuantiteVendue = 0,
+                NombreRecommandations = 0,
+                Poids = 0,
+                Taille = 0,
+                Provenance = "Chine",
+                Fournisseur = "Fournisseur",
+                MotsCles = "motscles1,motscles2",
+            };
+
+            mockArticleRepository.Setup(repo => repo.Create(entity)).Returns(true);
+            IArticleBLLRepository repository = new ArticleBLLService(mockArticleRepository.Object);
+
+            //act
+            bool result = repository.Create(entity);
+
+            //assert
+            Assert.True(result);
+            mockArticleRepository.Verify(repo => repo.Create(entity), Times.Once);
+        }
+
+        [Fact]
+        public void Create_Should_Return_False()
+        {
+            //arrange
+            ArticleEntity entity = new ArticleEntity()
+            {
+                Nom = "nom",
+                Description = "description",
+                Categorie = "categorie",
+                Quantite = 3,
+                Image = "path",
+                Prix = 50.25m,
+                QuantiteVendue = 0,
+                NombreRecommandations = 0,
+                Poids = 0,
+                Taille = 0,
+                Provenance = "Chine",
+                Fournisseur = "Fournisseur",
+                MotsCles = "motscles1,motscles2",
+            };
+
+            mockArticleRepository.Setup(repo => repo.Create(entity)).Returns(false);
+            IArticleBLLRepository repository = new ArticleBLLService(mockArticleRepository.Object);
+
+            //act
+            bool result = repository.Create(entity);
+
+            //assert
+            Assert.False(result);
+            mockArticleRepository.Verify(repo => repo.Create(entity), Times.Once);
         }
 
         #endregion
