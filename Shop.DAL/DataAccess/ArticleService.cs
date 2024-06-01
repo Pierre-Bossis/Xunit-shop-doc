@@ -28,23 +28,30 @@ namespace Shop.DAL.DataAccess
             @Nom, @Description, @Categorie, @Quantite, @Image, @Prix, @Poids, @Taille, @Provenance,
             @Fournisseur, @MotsCles);";
 
-            int rowsAffected = _connection.Execute(sql, new
+            try
             {
-                article.Nom,
-                article.Description,
-                article.Categorie,
-                article.Quantite,
-                article.Image,
-                article.Prix,
-                article.Poids,
-                article.Taille,
-                article.Provenance,
-                article.Fournisseur,
-                article.MotsCles
-            });
+                int rowsAffected = _connection.Execute(sql, new
+                {
+                    article.Nom,
+                    article.Description,
+                    article.Categorie,
+                    article.Quantite,
+                    article.Image,
+                    article.Prix,
+                    article.Poids,
+                    article.Taille,
+                    article.Provenance,
+                    article.Fournisseur,
+                    article.MotsCles
+                });
 
-
-            return rowsAffected > 0;
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
 
         public string DeleteByReference(int reference)
